@@ -1,0 +1,22 @@
+{
+  "app-id": "com.cqhqp.hello-tauri",
+  "runtime": "org.gnome.Platform",
+  "runtime-version": "45",
+  "sdk": "org.gnome.Sdk",
+  "command": "hello-tauri",
+  "modules": [
+    {
+      "name": "hello-tauri",
+      "buildsystem": "simple",
+      "build-commands": [
+        "cp -r src-tauri/target/release/hello-tauri /app/bin/hello-tauri"
+      ],
+      "sources": [
+        {
+          "type": "dir",
+          "path": "."
+        }
+      ]
+    }
+  ]
+}
