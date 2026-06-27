@@ -1,0 +1,47 @@
+name: "Release"
+
+on:
+  push:
+    tags:
+      - "v*" # 当你推送 v1.0.0 这样的标签时触发
+
+jobs:
+  release:
+    strategy:
+      fail-fast: false # 即使一个平台失败，其他平台也继续打包
+      matrix:
+        platform: [macos-latest, ubuntu-22.04, windows-latest]
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # 1. 安装 Node.js
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # 2. 安装 Rust
+      - uses: dtolnay/rust-toolchain@stable
+
+      # 3. 安装系统依赖 (Linux 必须)
+      - name: install dependencies (ubuntu only)
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libayatana-appindicator3-dev librsvg2-dev
+
+      # 4. 安装前端依赖并构建
+      - name: install frontend dependencies
+        run: npm install
+
+      # 5. 使用 tauri-action 打包
+      - name: build and release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: v${{ github.ref_name }}
+          releaseName: "App Release ${{ github.ref_name }}"
+          releasePrivate: false
