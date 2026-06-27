@@ -45,7 +45,7 @@ jobs:
         if: matrix.platform == 'ubuntu-22.04'
         run: |
           npm run tauri build
-          flatpak-builder --force-appstream-with-runtime build-dir com.cqhqp.hello-tauri.json
+          flatpak-builder build-dir com.cqhqp.hello-tauri.json
           flatpak-builder --bundle-version=0.1.1 --bundle-id=com.cqhqp.hello-tauri --bundle-version-git hello-tauri.flatpak build-dir
 
       - name: upload flatpak artifact (ubuntu only)
