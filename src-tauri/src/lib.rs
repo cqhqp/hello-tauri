@@ -8,8 +8,7 @@ fn greet(name: &str) -> String {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 // 2. 保证 Mac M 芯片优化 (可选)
 #[cfg_attr(
-    target_os = "macos",
-    target_arch = "arm64",
+    all(target_os = "macos", target_arch = "arm64"),
     option(feature = "macos-arm64")
 )]
 pub fn run() {
