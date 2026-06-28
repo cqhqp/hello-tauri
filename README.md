@@ -22,3 +22,32 @@ This template should help get you started developing with Tauri in vanilla HTML,
 2. 安装包：`flatpak install --user hello-tauri.flatpak`
 3. 运行：`flatpak run com.cqhqp.hello-tauri`
 *注意：如果提示缺少 Runtime，请运行 `flatpak install flathub org.gnome.Platform//45`*
+
+## 📱 安装指南 (Android)
+
+从 Release 页面下载 `app-release.apk` 并安装到 Android 设备（Android 7.0+）。
+
+### 开发环境搭建
+
+如需在本地构建 Android 版本，请先准备以下环境：
+
+1. 安装 [Android Studio](https://developer.android.com/studio)
+2. 配置环境变量（Windows 示例）：
+
+   ```powershell
+   [System.Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\Program Files\Android\Android Studio\jbr", "User")
+   [System.Environment]::SetEnvironmentVariable("ANDROID_HOME", "$env:LocalAppData\Android\Sdk", "User")
+   ```
+
+3. 安装 Rust Android target：
+
+   ```bash
+   rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
+   ```
+
+4. 初始化 Android 项目并运行：
+
+   ```bash
+   npm run tauri android init
+   npm run tauri:android
+   ```

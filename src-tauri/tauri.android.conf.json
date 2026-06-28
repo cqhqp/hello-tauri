@@ -1,0 +1,9 @@
+{
+  "$schema": "https://schema.tauri.app/config/2/android",
+  "bundle": {
+    "android": {
+      "minSdkVersion": 24,
+      "autoIncrementVersionCode": false
+    }
+  }
+}

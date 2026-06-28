@@ -50,3 +50,54 @@ jobs:
           files: hello-tauri.flatpak
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  release-android:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
+      - name: Sync version from tag
+        run: |
+          node scripts/sync-version.cjs ${{ github.ref_name }}
+      - name: install frontend dependencies
+        run: npm install
+      - name: setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: |
+            ndk;27.0.12077973
+            platform-tools
+            platforms;android-34
+            build-tools;34.0.0
+      - name: init Android project
+        run: |
+          npx tauri android init
+        env:
+          JAVA_HOME: ${{ env.JAVA_HOME }}
+          ANDROID_HOME: ${{ env.ANDROID_HOME }}
+          NDK_HOME: ${{ env.ANDROID_NDK_HOME }}
+      - name: build Android APK
+        run: |
+          npx tauri android build
+        env:
+          JAVA_HOME: ${{ env.JAVA_HOME }}
+          ANDROID_HOME: ${{ env.ANDROID_HOME }}
+          NDK_HOME: ${{ env.ANDROID_NDK_HOME }}
+      - name: locate APK
+        run: |
+          find src-tauri/gen/android -name "*.apk" -type f
+      - name: upload Android APK
+        uses: softprops/action-gh-release@v1
+        with:
+          files: src-tauri/gen/android/app/build/outputs/apk/release/*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
