@@ -76,18 +76,26 @@ jobs:
           packages: ndk;27.0.12077973 platform-tools platforms;android-34 build-tools;34.0.0
       - name: init Android project
         run: |
-          export NDK_HOME="$ANDROID_HOME/ndk/27.0.12077973"
+          export NDK_HOME="$ANDROID_HOME/ndk/27.0.12077973ANDROID_HOME/ndk/27.0.12077973"
           npx tauri android init
+        env:
+          JAVA_HOME: ${{ env.JAVA_HOME }}
+          ANDROID_HOME: ${{ env.ANDROID_HOME }}
       - name: build Android APK
         run: |
-          export NDK_HOME="$ANDROID_HOME/ndk/27.0.12077973"
-          npx tauri android build
-      - name: locate APK
+          export NDK_HOME="$ANDROID_HOME/ndk/27.0.12077973ANDROID_HOME/ndk/27.0.12077973"
+          npx tauri android build --apk
+        env:
+          JAVA_HOME: ${{ env.JAVA_HOME }}
+          ANDROID_HOME: ${{ env.ANDROID_HOME }}
+      - name: list android build output
         run: |
-          find src-tauri/gen/android -name "*.apk" -type f
+          find src-tauri/gen/android -type f \( -name "*.apk" -o -name "*.aab" \)
+          ls -la src-tauri/gen/android/app/build/outputs/apk/release/ 2>/dev/null || echo "no apk found in release dir"
       - name: upload Android APK
         uses: softprops/action-gh-release@v1
         with:
-          files: src-tauri/gen/android/app/build/outputs/apk/release/*.apk
+          files: |
+            src-tauri/gen/android/app/build/outputs/apk/release/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
