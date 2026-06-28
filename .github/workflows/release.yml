@@ -22,7 +22,7 @@ jobs:
         run: |
           VERSION=${GITHUB_REF_NAME#v}
           echo "Updating version to $VERSION"
-          node scripts/sync-version.js $VERSION
+          node scripts/sync-version.cjs $VERSION
           echo "Version updated successfully."
 
       - uses: actions/setup-node@v4
