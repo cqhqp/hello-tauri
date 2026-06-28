@@ -55,7 +55,8 @@ jobs:
           echo "Building Flatpak version $VERSION"
           npm run tauri build
           flatpak-builder build-dir com.cqhqp.hello-tauri.json
-          flatpak-builder --bundle-version=$VERSION --bundle-id=com.cqhqp.hello-tauri --bundle-version-git hello-tauri.flatpak build-dir
+          # 注意这里：--bundle 放在前面，且所有参数使用空格分隔，不使用等号
+          flatpak-builder --bundle hello-tauri.flatpak --bundle-version $VERSION --bundle-id com.cqhqp.hello-tauri build-dir
 
       - name: upload flatpak artifact (ubuntu only)
         if: matrix.platform == 'ubuntu-22.04'
