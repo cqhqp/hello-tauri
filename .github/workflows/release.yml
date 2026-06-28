@@ -39,6 +39,14 @@ jobs:
       - name: install frontend dependencies
         run: npm install
 
+      - name: build and release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: v${{ github.ref_name }}
+          releaseName: "App Release ${{ github.ref_name }}"
+
       - name: build flatpak bundle (ubuntu only)
         if: matrix.platform == 'ubuntu-22.04'
         run: |
