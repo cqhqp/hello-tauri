@@ -77,14 +77,23 @@ jobs:
       - name: init Android project
         run: |
           export NDK_HOME="$ANDROID_HOME/ndk/27.0.12077973"
-          npx tauri android init
+          npx tauri android init --ci
       - name: build Android APK
         run: |
           export NDK_HOME="$ANDROID_HOME/ndk/27.0.12077973"
-          npx tauri android build --apk
+          npx tauri android build --apk --ci
+      - name: sign Android APK
+        run: |
+          keytool -genkey -v -keystore release.keystore -alias release -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US"
+          BUILD_TOOLS="$ANDROID_HOME/build-tools/34.0.0"
+          UNSIGNED="src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk"
+          ALIGNED="src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-aligned.apk"
+          SIGNED="src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-signed.apk"
+          "$BUILD_TOOLS/zipalign" -v -p 4 "$UNSIGNED" "$ALIGNED"
+          "$BUILD_TOOLS/apksigner" sign --ks release.keystore --ks-pass pass:android --ks-key-alias release --key-pass pass:android --out "$SIGNED" "$ALIGNED"
       - name: list Android build output
         run: |
-          find src-tauri/gen/android -type f \( -name "*.apk" -o -name "*.aab" \)
+          find src-tauri/gen/android -type f -name "*.apk"
       - name: upload Android APK
         uses: softprops/action-gh-release@v1
         with:
