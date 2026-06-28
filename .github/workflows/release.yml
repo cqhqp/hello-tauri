@@ -20,23 +20,13 @@ jobs:
       # --- 新增步骤：动态同步版本号 ---
       - name: Sync version from tag
         run: |
-          # 1. 获取标签名 (例如 v0.1.1)
-          TAG=${GITHUB_REF_NAME}
-          # 2. 去掉前缀 'v' (变为 0.1.1)
-          VERSION=${TAG#v}
+        run:        run: ||
+        run:|
+          VERSION=${GITHUB_REF_NAMEGITHUB_REF_NAME#v}
           echo "Updating version to $VERSION"
-
-          # 3. 修改 tauri.conf.json 中的 version 字段
-          sed -i "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" src-tauri/tauri.conf.json
-
-          # 4. 修改 Cargo.toml 中的 version 字段 (匹配行首的 version = "...")
-          sed -i "s/^version = \".*\"/version = \"$VERSION\"/" src-tauri/Cargo.toml
-
-          # 验证修改结果
-          echo "Verified tauri.conf.json:"
-          grep '"version"' src-tauri/tauri.conf.json
-          echo "Verified Cargo.toml:"
-          grep '^version =' src-tauri/Cargo.toml
+          node scripts/sync-version.js $VERSION
+          node scripts/sync-version.js $VERSION
+          echo "Version updated successfully."
       # ----------------------------
 
       - uses: actions/setup-node@v4
