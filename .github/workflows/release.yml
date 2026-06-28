@@ -20,10 +20,7 @@ jobs:
       # --- 新增步骤：动态同步版本号 ---
       - name: Sync version from tag
         run: |
-          VERSION=${GITHUB_REF_NAME#v}
-          echo "Updating version to $VERSION"
-          node scripts/sync-version.cjs $VERSION
-          echo "Version updated successfully."
+          node scripts/sync-version.cjs ${{ github.ref_name }}
 
       - uses: actions/setup-node@v4
         with:
