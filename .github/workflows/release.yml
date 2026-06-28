@@ -51,6 +51,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   release-android:
+    needs: [release]
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -73,11 +74,7 @@ jobs:
       - name: setup Android SDK
         uses: android-actions/setup-android@v3
         with:
-          packages: |
-            ndk;27.0.12077973
-            platform-tools
-            platforms;android-34
-            build-tools;34.0.0
+          packages: ndk;27.0.12077973 platform-tools platforms;android-34 build-tools;34.0.0
       - name: init Android project
         run: |
           npx tauri android init
