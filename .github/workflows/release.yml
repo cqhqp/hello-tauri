@@ -76,18 +76,12 @@ jobs:
           packages: ndk;27.0.12077973 platform-tools platforms;android-34 build-tools;34.0.0
       - name: init Android project
         run: |
+          export NDK_HOME="$ANDROID_HOME/ndk/27.0.12077973"
           npx tauri android init
-        env:
-          JAVA_HOME: ${{ env.JAVA_HOME }}
-          ANDROID_HOME: ${{ env.ANDROID_HOME }}
-          NDK_HOME: ${{ env.ANDROID_NDK_HOME }}
       - name: build Android APK
         run: |
+          export NDK_HOME="$ANDROID_HOME/ndk/27.0.12077973"
           npx tauri android build
-        env:
-          JAVA_HOME: ${{ env.JAVA_HOME }}
-          ANDROID_HOME: ${{ env.ANDROID_HOME }}
-          NDK_HOME: ${{ env.ANDROID_NDK_HOME }}
       - name: locate APK
         run: |
           find src-tauri/gen/android -name "*.apk" -type f
