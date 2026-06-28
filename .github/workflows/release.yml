@@ -45,9 +45,8 @@ jobs:
           VERSION=${GITHUB_REF_NAME#v}
           echo "Building Flatpak version $VERSION"
           npm run tauri build
-          flatpak-builder build-dir com.cqhqp.hello-tauri.json
           flatpak-builder --repo=repo-dir --force-clean build-dir com.cqhqp.hello-tauri.json
-          flatpak build-bundle hello-tauri.flatpak com.cqhqp.hello-tauri repo-dir
+          flatpak build-bundle repo-dir hello-tauri.flatpak com.cqhqp.hello-tauri
 
       - name: upload flatpak artifact (ubuntu only)
         if: matrix.platform == 'ubuntu-22.04'
