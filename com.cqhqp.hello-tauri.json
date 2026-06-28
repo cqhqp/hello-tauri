@@ -9,7 +9,8 @@
       "name": "hello-tauri",
       "buildsystem": "simple",
       "build-commands": [
-        "cp -r src-tauri/target/release/hello-tauri /app/bin/hello-tauri"
+        "mkdir -p /app/bin",
+        "cp src-tauri/target/release/hello-tauri /app/bin/hello-tauri"
       ],
       "sources": [
         {
