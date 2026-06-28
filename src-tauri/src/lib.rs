@@ -6,11 +6,6 @@ fn greet(name: &str) -> String {
 
 // 1. 保证手机端能启动 (必须保留)
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
-// 2. 保证 Mac M 芯片优化 (可选)
-#[cfg_attr(
-    all(target_os = "macos", target_arch = "aarch64"),
-    option(feature = "macos-arm64")
-)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())

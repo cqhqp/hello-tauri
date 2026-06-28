@@ -27,7 +27,9 @@ jobs:
         if: matrix.platform == 'ubuntu-22.04'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev flatpak-builder
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev flatpak-builder xdg-utils
+          sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+          sudo flatpak install -y flathub org.gnome.Platform//45 org.gnome.Sdk//45
 
       - name: install frontend dependencies
         run: npm install
@@ -40,13 +42,15 @@ jobs:
           tagName: v${{ github.ref_name }}
           releaseName: "App Release ${{ github.ref_name }}"
 
-      # 将 Flatpak 构建作为 Ubuntu 任务的一个额外步骤
       - name: build flatpak bundle (ubuntu only)
         if: matrix.platform == 'ubuntu-22.04'
         run: |
+          # 动态提取版本号，去掉前缀 'v'
+          VERSION=${GITHUB_REF_NAME#v}
+          echo "Building Flatpak version $VERSION"
           npm run tauri build
           flatpak-builder build-dir com.cqhqp.hello-tauri.json
-          flatpak-builder --bundle-version=0.1.1 --bundle-id=com.cqhqp.hello-tauri --bundle-version-git hello-tauri.flatpak build-dir
+          flatpak-builder --bundle-version=$VERSION --bundle-id=com.cqhqp.hello-tauri --bundle-version-git hello-tauri.flatpak build-dir
 
       - name: upload flatpak artifact (ubuntu only)
         if: matrix.platform == 'ubuntu-22.04'
