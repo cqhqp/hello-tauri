@@ -39,14 +39,6 @@ jobs:
       - name: install frontend dependencies
         run: npm install
 
-      - name: build and release
-        uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tagName: v${{ github.ref_name }}
-          releaseName: "App Release ${{ github.ref_name }}"
-
       - name: build flatpak bundle (ubuntu only)
         if: matrix.platform == 'ubuntu-22.04'
         run: |
@@ -54,7 +46,7 @@ jobs:
           echo "Building Flatpak version $VERSION"
           npm run tauri build
           flatpak-builder build-dir com.cqhqp.hello-tauri.json
-          flatpak-builder --repo=repo-dir build-dir com.cqhqp.hello-tauri.json
+          flatpak-builder --repo=repo-dir --force-clean build-dir com.cqhqp.hello-tauri.json
           flatpak build-bundle hello-tauri.flatpak com.cqhqp.hello-tauri repo-dir
 
       - name: upload flatpak artifact (ubuntu only)
