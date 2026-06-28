@@ -52,16 +52,10 @@ jobs:
         run: |
           VERSION=${GITHUB_REF_NAME#v}
           echo "Building Flatpak version $VERSION"
-
-          # 1. 编译 Tauri 二进制文件
           npm run tauri build
-
-          # 2. 构建 Flatpak 目录 (使用 flatpak-builder)
           flatpak-builder build-dir com.cqhqp.hello-tauri.json
-
-          # 3. 将构建目录打包成 .flatpak 文件 (使用 flatpak build-bundle)
-          # 语法: flatpak build-bundle [文件名] [应用ID] [构建目录]
-          flatpak build-bundle hello-tauri.flatpak com.cqhqp.hello-tauri build-dir
+          flatpak-builder --repo=repo-dir build-dir com.cqhqp.hello-tauri.json
+          flatpak build-bundle hello-tauri.flatpak com.cqhqp.hello-tauri repo-dir
 
       - name: upload flatpak artifact (ubuntu only)
         if: matrix.platform == 'ubuntu-22.04'
