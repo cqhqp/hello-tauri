@@ -51,7 +51,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   release-android:
-    needs: [release]
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
